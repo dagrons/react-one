@@ -1,0 +1,3 @@
+[submodule "mal_ui"]
+	path = mal_ui
+	url = git@github.com:dagrons/mal_ui

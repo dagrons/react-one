@@ -36,3 +36,32 @@
     transform: rotate(360deg);
   }
 }
+
+.message-container {
+  display: flex;
+  align-items: flex-start;
+  margin: 10px;
+  max-width: 60%;
+}
+
+.user-message {
+  background-color: #d1e7dd;
+  color: #0f5132;
+  border-radius: 10px;
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.bot-message {
+  background-color: #f8d7da;
+  color: #842029;
+  border-radius: 10px;
+  align-self: flex-start;
+}
+
+.message-content {
+  padding: 10px;
+  border-radius: 10px;
+  margin-left: 10px;
+  max-width: 100%;
+}
