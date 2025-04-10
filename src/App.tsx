@@ -30,10 +30,6 @@ const App = () => {
                                     <h3 className="font-semibold text-lg mb-2">Shadcn UI</h3>
                                     <p>可定制的UI组件库，基于Radix UI</p>
                                 </div>
-                                <div className="p-4 border rounded-lg md:col-span-2">
-                                    <h3 className="font-semibold text-lg mb-2">D3.js</h3>
-                                    <p>强大的JavaScript数据可视化库，允许创建复杂的交互式图表和可视化</p>
-                                </div>
                             </div>
                         </CardContent>
                     </Card>
