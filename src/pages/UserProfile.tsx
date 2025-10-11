@@ -24,9 +24,10 @@ const UserProfilePage = () => {
         isRefreshing,
         filteredUserList,
         searchKeyword,
-        setSearchKeyword,
+        searchInput,
+        setSearchInput,
         departmentFilter,
-        setDepartmentFilter,
+        changeDepartmentFilter,
         departmentOptions,
         resetFilters,
         submitSearch,
@@ -121,12 +122,13 @@ const UserProfilePage = () => {
                 userOptions={userOptionsForSelect}
                 selectedUserId={selectedUserId}
                 onUserChange={selectUser}
-                searchKeyword={searchKeyword}
-                onSearchChange={setSearchKeyword}
+                searchInput={searchInput}
+                onSearchInputChange={setSearchInput}
+                activeSearchKeyword={searchKeyword}
                 onSearchSubmit={submitSearch}
                 departmentOptions={departmentOptions}
                 selectedDepartment={departmentFilter}
-                onDepartmentChange={setDepartmentFilter}
+                onDepartmentChange={changeDepartmentFilter}
                 onResetFilters={resetFilters}
             />
             {showNoMatchBanner && (

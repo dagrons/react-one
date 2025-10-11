@@ -18,13 +18,29 @@ interface UseUserProfileState {
     refreshProfile: () => Promise<void>;
     filteredUserList: UserListItem[];
     searchKeyword: string;
-    setSearchKeyword: (value: string) => void;
+    searchInput: string;
+    setSearchInput: (value: string) => void;
     departmentFilter: string;
-    setDepartmentFilter: (value: string) => void;
+    changeDepartmentFilter: (value: string) => void;
     departmentOptions: string[];
     resetFilters: () => void;
     submitSearch: () => void;
 }
+
+const applyFilters = (
+    list: UserListItem[],
+    keyword: string,
+    department: string
+): UserListItem[] => {
+    const normalizedKeyword = keyword.trim().toLowerCase();
+    return list.filter((item) => {
+        const matchesKeyword =
+            !normalizedKeyword || item.name.toLowerCase().includes(normalizedKeyword);
+        const matchesDepartment =
+            department === ALL_DEPARTMENTS_FILTER || item.department === department;
+        return matchesKeyword && matchesDepartment;
+    });
+};
 
 export const useUserProfile = (): UseUserProfileState => {
     const { apiBaseUrl } = useApiConfig();
@@ -40,17 +56,8 @@ export const useUserProfile = (): UseUserProfileState => {
     const [isProfileLoading, setIsProfileLoading] = useState<boolean>(false);
     const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
     const [searchKeyword, setSearchKeyword] = useState<string>("");
+    const [searchInput, setSearchInput] = useState<string>("");
     const [departmentFilter, setDepartmentFilter] = useState<string>(ALL_DEPARTMENTS_FILTER);
-    const [debouncedKeyword, setDebouncedKeyword] = useState<string>("");
-
-    useEffect(() => {
-        const handle = setTimeout(() => {
-            setDebouncedKeyword(searchKeyword);
-        }, 240);
-        return () => {
-            clearTimeout(handle);
-        };
-    }, [searchKeyword]);
 
     const departmentOptions = useMemo(() => {
         const departments = new Set<string>();
@@ -62,15 +69,10 @@ export const useUserProfile = (): UseUserProfileState => {
         return Array.from(departments).sort((a, b) => a.localeCompare(b, "zh-Hans-CN"));
     }, [userList]);
 
-    const filteredUserList = useMemo(() => {
-        const keyword = debouncedKeyword.trim().toLowerCase();
-        return userList.filter((item) => {
-            const matchesKeyword = !keyword || item.name.toLowerCase().includes(keyword);
-            const matchesDepartment =
-                departmentFilter === ALL_DEPARTMENTS_FILTER || item.department === departmentFilter;
-            return matchesKeyword && matchesDepartment;
-        });
-    }, [debouncedKeyword, departmentFilter, userList]);
+    const filteredUserList = useMemo(
+        () => applyFilters(userList, searchKeyword, departmentFilter),
+        [departmentFilter, searchKeyword, userList]
+    );
 
     useEffect(() => {
         let isMounted = true;
@@ -115,10 +117,13 @@ export const useUserProfile = (): UseUserProfileState => {
             setSelectedUserId(null);
             return;
         }
-        if (!selectedUserId || !userList.some((item) => item.id === selectedUserId)) {
-            setSelectedUserId(userList[0].id);
-        }
-    }, [selectedUserId, userList]);
+        setSelectedUserId((current) => {
+            if (current && userList.some((item) => item.id === current)) {
+                return current;
+            }
+            return userList[0]?.id ?? null;
+        });
+    }, [userList]);
 
     const loadProfile = useCallback(
         async (userId: string, { silent = false }: { silent?: boolean } = {}) => {
@@ -187,27 +192,34 @@ export const useUserProfile = (): UseUserProfileState => {
         await loadProfile(selectedUserId, { silent: true });
     }, [loadProfile, selectedUserId]);
 
-    const resetFilters = useCallback(() => {
-        setSearchKeyword("");
-        setDebouncedKeyword("");
-        setDepartmentFilter(ALL_DEPARTMENTS_FILTER);
-    }, []);
-
     const submitSearch = useCallback(() => {
-        const keyword = searchKeyword.trim().toLowerCase();
-        if (!keyword && departmentFilter === ALL_DEPARTMENTS_FILTER) {
-            return;
-        }
-        const matches = userList.filter((item) => {
-            const matchesKeyword = !keyword || item.name.toLowerCase().includes(keyword);
-            const matchesDepartment =
-                departmentFilter === ALL_DEPARTMENTS_FILTER || item.department === departmentFilter;
-            return matchesKeyword && matchesDepartment;
-        });
-        if (matches.length) {
+        const appliedKeyword = searchInput.trim();
+        setSearchKeyword(appliedKeyword);
+        const matches = applyFilters(userList, appliedKeyword, departmentFilter);
+        if (matches.length && !matches.some((item) => item.id === selectedUserId)) {
             setSelectedUserId(matches[0].id);
         }
-    }, [departmentFilter, searchKeyword, userList]);
+    }, [departmentFilter, searchInput, selectedUserId, userList]);
+
+    const changeDepartmentFilter = useCallback(
+        (value: string) => {
+            setDepartmentFilter(value);
+            const matches = applyFilters(userList, searchKeyword, value);
+            if (matches.length && !matches.some((item) => item.id === selectedUserId)) {
+                setSelectedUserId(matches[0].id);
+            }
+        },
+        [searchKeyword, selectedUserId, userList]
+    );
+
+    const resetFilters = useCallback(() => {
+        setSearchInput("");
+        setSearchKeyword("");
+        setDepartmentFilter(ALL_DEPARTMENTS_FILTER);
+        if (userList.length) {
+            setSelectedUserId(userList[0].id);
+        }
+    }, [userList]);
 
     return {
         userList,
@@ -222,9 +234,10 @@ export const useUserProfile = (): UseUserProfileState => {
         refreshProfile,
         filteredUserList,
         searchKeyword,
-        setSearchKeyword,
+        searchInput,
+        setSearchInput,
         departmentFilter,
-        setDepartmentFilter,
+        changeDepartmentFilter,
         departmentOptions,
         resetFilters,
         submitSearch,

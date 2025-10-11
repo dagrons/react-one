@@ -13,8 +13,9 @@ interface SummaryBarProps {
     userOptions?: UserListItem[];
     selectedUserId?: string | null;
     onUserChange?: (userId: string) => void;
-    searchKeyword?: string;
-    onSearchChange?: (value: string) => void;
+    searchInput?: string;
+    onSearchInputChange?: (value: string) => void;
+    activeSearchKeyword?: string;
     onSearchSubmit?: () => void;
     departmentOptions?: string[];
     selectedDepartment?: string;
@@ -30,8 +31,9 @@ const SummaryBar = ({
     userOptions,
     selectedUserId,
     onUserChange,
-    searchKeyword,
-    onSearchChange,
+    searchInput,
+    onSearchInputChange,
+    activeSearchKeyword,
     onSearchSubmit,
     departmentOptions,
     selectedDepartment,
@@ -89,8 +91,8 @@ const SummaryBar = ({
                                         搜索姓名
                                     </label>
                                     <input
-                                        value={searchKeyword ?? ""}
-                                        onChange={(event) => onSearchChange?.(event.target.value)}
+                                        value={searchInput ?? ""}
+                                        onChange={(event) => onSearchInputChange?.(event.target.value)}
                                         onKeyDown={(event) => {
                                             if (event.key === "Enter") {
                                                 event.preventDefault();
@@ -120,7 +122,8 @@ const SummaryBar = ({
                                         </select>
                                     </div>
                                 )}
-                                {(searchKeyword ||
+                                {((searchInput && searchInput.trim().length > 0) ||
+                                    (activeSearchKeyword && activeSearchKeyword.trim().length > 0) ||
                                     (selectedDepartment && selectedDepartment !== ALL_DEPARTMENTS_FILTER)) && (
                                     <Button
                                         variant="outline"
