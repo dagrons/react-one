@@ -11,9 +11,9 @@ const Layout = () => {
     };
 
     return (
-        <div className="flex h-screen w-full overflow-hidden">
+        <div className="flex h-screen w-full overflow-hidden bg-slate-950 text-slate-100">
             {isSidebarVisible && (
-                <aside className="h-full">
+                <aside className="h-full bg-slate-950/90 backdrop-blur-sm">
                     <Sidebar
                         isVisible={isSidebarVisible}
                         onToggleVisibility={toggleSidebarVisibility}
@@ -23,7 +23,7 @@ const Layout = () => {
 
             <main
                 className={cn(
-                    "flex-1 overflow-y-auto p-6 bg-gray-50 dark:bg-gray-900 transition-all duration-300",
+                    "relative flex-1 overflow-y-auto bg-gradient-to-br from-slate-950 via-slate-950/95 to-slate-900/90 p-8 transition-all duration-300",
                     !isSidebarVisible && "w-full"
                 )}
             >

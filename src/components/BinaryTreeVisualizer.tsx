@@ -252,16 +252,20 @@ const BinaryTreeVisualizer = () => {
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-col gap-4">
-                        <div className="bg-gray-100 p-4 rounded-md text-sm mb-2">
-                            <p className="font-medium mb-2">数据格式说明:</p>
+                        <div className="mb-2 rounded-xl border border-slate-800/60 bg-slate-900/70 p-4 text-sm">
+                            <p className="mb-2 font-medium text-slate-100">数据格式说明:</p>
                             <ul className="list-disc pl-5 space-y-1">
-                                <li>每个节点可以包含任意属性</li>
-                                <li>使用 <code className="bg-gray-200 px-1 rounded">left</code> 属性指向左子节点</li>
-                                <li>使用 <code className="bg-gray-200 px-1 rounded">right</code> 属性指向右子节点</li>
+                                <li className="text-slate-400">每个节点可以包含任意属性</li>
+                                <li className="text-slate-400">
+                                    使用 <code className="rounded bg-slate-800/80 px-1 text-sky-300">left</code> 属性指向左子节点
+                                </li>
+                                <li className="text-slate-400">
+                                    使用 <code className="rounded bg-slate-800/80 px-1 text-sky-300">right</code> 属性指向右子节点
+                                </li>
                             </ul>
                         </div>
                         <textarea
-                            className="font-mono p-4 rounded-md border border-gray-300 w-full h-60"
+                            className="font-mono h-60 w-full rounded-xl border border-slate-800/70 bg-slate-950/80 p-4 text-slate-100 focus:border-sky-500/60 focus:outline-none focus:ring-0"
                             value={jsonInput}
                             onChange={e => setJsonInput(e.target.value)}
                             placeholder='{\n  "v": 10,\n  "lazy": 0,\n  "left": {\n    "v": 5,\n    "lazy": 0\n  },\n  "right": {\n    "v": 15,\n    "lazy": 0\n  }\n}'
@@ -300,20 +304,20 @@ const BinaryTreeVisualizer = () => {
                             <Button onClick={handleReset} variant="outline" size="sm" title="重置视图">
                                 <MoveHorizontal className="h-4 w-4 mr-1" /> 重置视图
                             </Button>
-                            <div className="ml-2 px-2 py-1 bg-gray-100 rounded text-sm">
+                            <div className="ml-2 rounded border border-slate-800/60 bg-slate-900/60 px-2 py-1 text-sm text-slate-300">
                                 缩放: {Math.round(zoomLevel * 100)}%
                             </div>
                         </div>
-                        <div className="flex justify-center overflow-hidden border rounded-md">
+                        <div className="flex justify-center overflow-hidden rounded-xl border border-slate-800/70 bg-slate-950/80">
                             <svg
                                 ref={svgRef}
                                 width="1000"
                                 height="800"
-                                className="bg-gray-50"
-                                style={{cursor: "move"}}
+                                className="bg-slate-950"
+                                style={{ cursor: "move" }}
                             ></svg>
                         </div>
-                        <div className="text-sm text-gray-500 mt-2">
+                        <div className="mt-2 text-sm text-slate-400">
                             <p><strong>交互说明:</strong> 使用鼠标滚轮或触摸板缩放，按住鼠标拖动可平移视图</p>
                             <p><strong>节点内容:</strong> 显示节点的所有属性（除了left和right）</p>
                         </div>

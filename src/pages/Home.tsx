@@ -1,29 +1,17 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
-import { Button } from "../components/ui/button";
+import { Settings, User2Icon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { TreePine, BarChart, FileCode, Settings } from 'lucide-react';
+import { Button } from "../components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 
 const HomePage = () => {
     const navigate = useNavigate();
 
     const features = [
         {
-            title: "二叉树可视化",
-            description: "可视化展示二叉树结构，支持缩放和拖拽",
-            icon: TreePine,
-            path: "/tree-visualizer"
-        },
-        {
-            title: "数据图表",
-            description: "创建各种类型的交互式数据图表",
-            icon: BarChart,
-            path: "/charts"
-        },
-        {
-            title: "代码编辑器",
-            description: "在线编辑和运行代码",
-            icon: FileCode,
-            path: "/code-editor"
+            title: "用户画像",
+            description: "展示及分析用户行为",
+            icon: User2Icon,
+            path: "/user-profile"
         },
         {
             title: "设置",
@@ -34,27 +22,45 @@ const HomePage = () => {
     ];
 
     return (
-        <div>
-            <div className="mb-8 text-center">
-                <h1 className="text-3xl font-bold mb-2">数据可视化工具</h1>
-                <p className="text-gray-500 dark:text-gray-400">
-                    一站式数据可视化和分析平台
-                </p>
+        <div className="space-y-10">
+            <div className="rounded-3xl border border-slate-800/70 bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 p-10 shadow-xl shadow-slate-950/50">
+                <div className="space-y-4 text-center">
+                    <div className="inline-flex items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/60 px-4 py-2 text-xs uppercase tracking-[0.4em] text-slate-400">
+                        DGP · EXTEND
+                    </div>
+                    <h1 className="text-4xl font-semibold text-white">
+                        数据中台扩展分析与展示平台
+                    </h1>
+                    <p className="text-base text-slate-400">
+                        聚焦门禁与系统行为的一体化洞察，为安全决策与运营赋能。
+                    </p>
+                </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid gap-6 md:grid-cols-2">
                 {features.map((feature, index) => (
-                    <Card key={index} className="hover:shadow-md transition-shadow">
-                        <CardHeader className="flex flex-row items-center gap-4">
-                            <feature.icon className="h-8 w-8 text-primary" />
+                    <Card
+                        key={index}
+                        className="group border-slate-800/70 bg-slate-950/70 p-0 transition hover:-translate-y-1 hover:border-sky-500/60 hover:shadow-2xl hover:shadow-sky-500/20"
+                    >
+                        <CardHeader className="flex flex-row items-center gap-4 pb-2">
+                            <div className="rounded-2xl border border-slate-700/60 bg-slate-900/70 p-3 text-sky-300 transition group-hover:border-sky-500/60 group-hover:text-sky-200">
+                                <feature.icon className="h-7 w-7" />
+                            </div>
                             <div>
-                                <CardTitle>{feature.title}</CardTitle>
-                                <CardDescription>{feature.description}</CardDescription>
+                                <CardTitle className="text-xl text-white">{feature.title}</CardTitle>
+                                <CardDescription className="text-sm text-slate-400">
+                                    {feature.description}
+                                </CardDescription>
                             </div>
                         </CardHeader>
-                        <CardContent>
-                            <Button onClick={() => navigate(feature.path)}>
+                        <CardContent className="pb-6">
+                            <Button
+                                onClick={() => navigate(feature.path)}
+                                className="w-full justify-between"
+                            >
                                 打开 {feature.title}
+                                <feature.icon className="h-5 w-5" />
                             </Button>
                         </CardContent>
                     </Card>

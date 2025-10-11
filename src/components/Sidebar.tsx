@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Home, TreePine, BarChart, Settings, FileCode, ChevronLeft, ChevronRight, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useNavigate, useLocation } from 'react-router-dom';
+import { ChevronLeft, ChevronRight, Home, Menu, Settings, User2Icon } from "lucide-react";
+import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from "./ui/button";
 
 interface SidebarItemProps {
@@ -18,8 +18,10 @@ const SidebarItem = ({ icon: Icon, label, href, active, collapsed }: SidebarItem
     return (
         <div
             className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50",
-                active ? "bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-50" : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                "group flex items-center gap-3 rounded-xl px-3 py-2 text-slate-400 transition-all hover:text-slate-100",
+                active
+                    ? "bg-slate-800/80 text-sky-400 shadow-inner shadow-sky-500/10"
+                    : "hover:bg-slate-900/60 hover:shadow hover:shadow-slate-900/60"
             )}
             onClick={() => navigate(href)}
             style={{ cursor: 'pointer' }}
@@ -43,9 +45,7 @@ const Sidebar = ({ isVisible, onToggleVisibility }: SidebarProps) => {
 
     const menuItems = [
         { icon: Home, label: '首页', href: '/' },
-        { icon: TreePine, label: '二叉树可视化', href: '/tree-visualizer' },
-        { icon: BarChart, label: '数据图表', href: '/charts' },
-        { icon: FileCode, label: '代码编辑器', href: '/code-editor' },
+        { icon: User2Icon, label: '用户画像', href: '/user-profile'},
         { icon: Settings, label: '设置', href: '/settings' },
     ];
 
@@ -69,17 +69,25 @@ const Sidebar = ({ isVisible, onToggleVisibility }: SidebarProps) => {
     return (
         <div
             className={cn(
-                "flex h-full flex-col border-r bg-white dark:bg-gray-950 dark:border-gray-800 transition-all duration-300 relative",
-                collapsed ? "w-16" : "w-64"
+                "relative flex h-full flex-col border-r border-slate-800/70 bg-slate-950/95 transition-all duration-300 backdrop-blur-sm",
+                collapsed ? "w-20" : "w-[17rem]"
             )}
         >
-            <div className={cn("p-4 flex", collapsed ? "justify-center" : "justify-between")}>
-                {!collapsed && <h2 className="text-xl font-bold">数据可视化工具</h2>}
+            <div className={cn("flex p-4", collapsed ? "justify-center" : "justify-between")}>
+                {!collapsed && (
+                    <div>
+                        <h2 className="text-xl font-semibold text-white">DGP-Extend</h2>
+                        <p className="text-xs uppercase tracking-[0.2em] text-slate-500">行为洞察中枢</p>
+                    </div>
+                )}
                 <Button
                     variant="ghost"
                     size="icon"
                     onClick={() => setCollapsed(!collapsed)}
-                    className={cn("rounded-full", collapsed && "ml-0")}
+                    className={cn(
+                        "rounded-full border border-slate-700/60 bg-slate-900/70 text-slate-200 hover:bg-slate-800",
+                        collapsed && "ml-0"
+                    )}
                     aria-label={collapsed ? "展开侧边栏" : "折叠侧边栏"}
                 >
                     {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
@@ -101,9 +109,9 @@ const Sidebar = ({ isVisible, onToggleVisibility }: SidebarProps) => {
                 </div>
             </div>
 
-            <div className={cn("border-t p-3 dark:border-gray-800", collapsed ? "text-center" : "")}>
+            <div className={cn("border-t border-slate-800/70 p-3", collapsed ? "text-center" : "")}>
                 {!collapsed && (
-                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                    <div className="text-xs uppercase tracking-widest text-slate-500">
                         版本 1.0.0
                     </div>
                 )}
@@ -111,7 +119,7 @@ const Sidebar = ({ isVisible, onToggleVisibility }: SidebarProps) => {
                     variant="outline"
                     size="sm"
                     onClick={onToggleVisibility}
-                    className="mt-2"
+                    className="mt-2 border-slate-700/60 bg-slate-900/70 text-slate-200 hover:bg-slate-800"
                     aria-label="隐藏侧边栏"
                 >
                     {collapsed ? <Menu className="h-4 w-4" /> : "隐藏侧边栏"}
