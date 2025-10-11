@@ -1,17 +1,46 @@
-import { UserSummary } from "@/data/userProfile";
+import { UserListItem, UserSummary } from "@/data/userProfile";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { RefreshCw } from "lucide-react";
+import { ALL_DEPARTMENTS_FILTER } from "@/hooks/useUserProfile";
 
 interface SummaryBarProps {
     summary: UserSummary;
     onRefresh?: () => void;
     isRefreshing?: boolean;
     className?: string;
+    userOptions?: UserListItem[];
+    selectedUserId?: string | null;
+    onUserChange?: (userId: string) => void;
+    searchKeyword?: string;
+    onSearchChange?: (value: string) => void;
+    onSearchSubmit?: () => void;
+    departmentOptions?: string[];
+    selectedDepartment?: string;
+    onDepartmentChange?: (value: string) => void;
+    onResetFilters?: () => void;
 }
 
-const SummaryBar = ({ summary, onRefresh, isRefreshing, className }: SummaryBarProps) => {
+const SummaryBar = ({
+    summary,
+    onRefresh,
+    isRefreshing,
+    className,
+    userOptions,
+    selectedUserId,
+    onUserChange,
+    searchKeyword,
+    onSearchChange,
+    onSearchSubmit,
+    departmentOptions,
+    selectedDepartment,
+    onDepartmentChange,
+    onResetFilters,
+}: SummaryBarProps) => {
+    const hasMultipleUsers = (userOptions?.length ?? 0) > 1;
+    const hasDepartmentFilter = (departmentOptions?.length ?? 0) > 1;
+
     return (
         <Card
             className={cn(
@@ -30,7 +59,81 @@ const SummaryBar = ({ summary, onRefresh, isRefreshing, className }: SummaryBarP
                         {summary.department} · 工号 {summary.employeeId}
                     </p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-3 text-right">
+                    {(hasMultipleUsers || hasDepartmentFilter) && (
+                        <div className="flex flex-col gap-3 text-left">
+                            {hasMultipleUsers && (
+                                <div>
+                                    <label className="text-xs uppercase tracking-widest text-slate-400">
+                                        切换画像对象
+                                    </label>
+                                    <select
+                                        value={selectedUserId ?? ""}
+                                        onChange={(event) => onUserChange?.(event.target.value)}
+                                        className={cn(
+                                            "mt-2 min-w-[200px] rounded-xl border border-slate-700/70 bg-slate-900/70 px-3 py-2 text-sm font-medium text-slate-100",
+                                            "focus:border-sky-500/60 focus:outline-none"
+                                        )}
+                                    >
+                                        {userOptions?.map((user) => (
+                                            <option key={user.id} value={user.id}>
+                                                {user.name} · {user.department.replace(/·/g, "/")}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+                            <div className="flex flex-wrap items-center gap-3">
+                                <div className="flex flex-col">
+                                    <label className="text-xs uppercase tracking-widest text-slate-400">
+                                        搜索姓名
+                                    </label>
+                                    <input
+                                        value={searchKeyword ?? ""}
+                                        onChange={(event) => onSearchChange?.(event.target.value)}
+                                        onKeyDown={(event) => {
+                                            if (event.key === "Enter") {
+                                                event.preventDefault();
+                                                onSearchSubmit?.();
+                                            }
+                                        }}
+                                        placeholder="输入姓名关键字"
+                                        className="mt-2 w-48 rounded-xl border border-slate-700/70 bg-slate-900/70 px-3 py-2 text-sm text-slate-100 focus:border-sky-500/60 focus:outline-none"
+                                    />
+                                </div>
+                                {hasDepartmentFilter && (
+                                    <div className="flex flex-col">
+                                        <label className="text-xs uppercase tracking-widest text-slate-400">
+                                            按部门筛选
+                                        </label>
+                                        <select
+                                            value={selectedDepartment ?? ALL_DEPARTMENTS_FILTER}
+                                            onChange={(event) => onDepartmentChange?.(event.target.value)}
+                                            className="mt-2 min-w-[200px] rounded-xl border border-slate-700/70 bg-slate-900/70 px-3 py-2 text-sm text-slate-100 focus:border-sky-500/60 focus:outline-none"
+                                        >
+                                            <option value={ALL_DEPARTMENTS_FILTER}>全部部门</option>
+                                            {departmentOptions?.map((dept) => (
+                                                <option key={dept} value={dept}>
+                                                    {dept}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                )}
+                                {(searchKeyword ||
+                                    (selectedDepartment && selectedDepartment !== ALL_DEPARTMENTS_FILTER)) && (
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={onResetFilters}
+                                        className="self-end border-slate-700/60 bg-slate-900/70 text-slate-200 hover:bg-slate-800"
+                                    >
+                                        重置筛选
+                                    </Button>
+                                )}
+                            </div>
+                        </div>
+                    )}
                     <div className="rounded-xl border border-slate-700/80 bg-slate-900/60 px-4 py-2 text-right">
                         <p className="text-xs tracking-widest text-slate-400">AI 风险评分</p>
                         <p className="text-3xl font-semibold text-amber-300">{summary.riskScore}</p>
