@@ -37,7 +37,7 @@ const createRealApiClient = (baseUrl: string): UserProfileApi => {
 
     return {
         getUserList(options) {
-            return fetchJson<UserListItem[]>(buildUrl("/user-profiles"), {
+            return fetchJson<UserListItem[]>(buildUrl("/user-profiles/"), {
                 signal: options?.signal,
             });
         },
